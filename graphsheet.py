@@ -1,17 +1,20 @@
 import glob
 import pylab as pl
-from numpy import genfromtxt
+from numpy import genfromtxt,where,isnan
 from matplotlib.backends.backend_pdf import PdfPages
 pp = PdfPages('data_summary.pdf')
 plots = []
 index = [3,4,9,10]
-secondplot = True
 skiphead = 0
 fig = pl.figure(figsize = (8,10))
 
 def get_data_cols(input):
     # find max length columns, return list of indices with same length col
-    return [3,4],False
+    datacols = where(isnan(data[-1,:]) == False)[0]
+    secondplot = False
+    if len(datacols) > 2:
+        secondplot = True
+    return datacols,secondplot
 
 for number,files in enumerate(glob.glob("*.csv")):
     data = genfromtxt(files,delimiter=",",skip_header=skiphead)
